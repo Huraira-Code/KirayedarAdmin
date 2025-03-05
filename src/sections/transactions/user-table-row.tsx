@@ -10,6 +10,7 @@ import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
 import { Iconify } from 'src/components/iconify';
+
 import {
   Dialog,
   DialogTitle,
@@ -19,6 +20,7 @@ import {
   CardMedia,
   Typography,
 } from '@mui/material';
+
 import { Label } from 'src/components/label';
 import axios from 'axios';
 import { BASE_URL } from 'src/api';
@@ -42,15 +44,32 @@ type UserTableRowProps = {
 
 export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) {
   interface UserData {
-    _id: String;
-    username: string;
-    email: string;
-    cnic: number;
-    Verified: boolean;
-    phonenumber: number;
-    CNICImageArray: Array<string>;
-
-    // Add any other properties you expect
+    PaymentIntentId: String;
+    TransactionType: string;
+    TransactionAmount: string;
+    InAccordance: string;
+    InAccordancePropertyId: {
+      title: string;
+      description: string;
+    };
+    SendedId: {
+      _id: string;
+      username: string;
+      BankAountStripeId: string;
+      Verified: boolean;
+      cnic: number;
+      email: string;
+      phonenumber: number;
+    };
+    RecieverId: {
+      _id: string;
+      username: string;
+      BankAountStripeId: string;
+      Verified: boolean;
+      cnic: number;
+      email: string;
+      phonenumber: number;
+    };
   }
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
   const [popoverData, setPopoverData] = useState<UserData | null>(null);
@@ -82,38 +101,15 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
   };
   useEffect(() => {
     axios
-      .post(`${BASE_URL}/api/admin/adminalluser`)
+      .post(`${BASE_URL}/api/admin/creditData`)
       .then((response) => {
-        setUsers(response.data);
+        console.log(response.data);
+        setUsers(response.data.data);
       })
       .catch((err) => {
         console.error('Error fetching users:', err);
       });
   }, [dialogParam]);
-
-  const handleVerifyUser = (data: UserData) => {
-    // Make the API call to verify the user.
-    axios
-      .post(`${BASE_URL}/api/admin/verifyUser`, { id: data._id })
-      .then((response) => {
-        console.log(response.status);
-        if (response.status == 200) {
-          setDialogParam(data);
-          // Then open the modal.
-
-          setOpenModal(true);
-          handleClosePopover();
-        }
-        // // If verification is successful, store a parameter (for example, the user's name)
-        // setDialogParam(data);
-        // // Then open the modal.
-        // setOpenModal(true);
-        // handleClosePopover();
-      })
-      .catch((err) => {
-        console.error('Error verifying user:', err);
-      });
-  };
 
   console.log(user.length);
   return (
@@ -126,23 +122,17 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
             <TableCell component="th" scope="row">
               <Box gap={2} display="flex" alignItems="center">
-                {e.username}
+                {e.PaymentIntentId}
               </Box>
             </TableCell>
 
-            <TableCell>{e.email}</TableCell>
+            <TableCell>{e.TransactionType}</TableCell>
 
-            <TableCell>{e.cnic}</TableCell>
+            <TableCell>{e.TransactionAmount}</TableCell>
+            <TableCell>{e.InAccordance}</TableCell>
 
-            <TableCell align="center">
-              {e.Verified ? (
-                <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
-              ) : (
-                '-'
-              )}
-            </TableCell>
-
-            <TableCell>{e.phonenumber}</TableCell>
+            <TableCell>{e.SendedId?._id}</TableCell>
+            <TableCell>{e.RecieverId?._id}</TableCell>
 
             <TableCell align="right">
               <IconButton onClick={(event) => handleOpenPopover(event, e)}>
@@ -175,39 +165,70 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             },
           }}
         >
-          <MenuItem onClick={() => handleVerifyUser(popoverData!)}>
-            <Iconify icon="hugeicons:tick-01" />
-            Make User Verify
-          </MenuItem>
-
           <MenuItem
             onClick={() => {
               setOpenImageModal(true);
             }}
           >
             <Iconify icon="tabler:app-window-filled" />
-            Show CNIC Images
+            Show More Information
           </MenuItem>
         </MenuList>
       </Popover>
       <Dialog open={openImageModal} onClose={handleCloseImageModal}>
-        <DialogTitle>User CNIC Images</DialogTitle>
+        <DialogTitle>Transactions Detail Information</DialogTitle>
         <DialogContent>
-          {popoverData?.CNICImageArray?.length ? (
-            popoverData.CNICImageArray.map((e: string, index: number) => (
-              <CardMedia
-                key={index} // Always add a key when mapping elements in React
-                component="img"
-                image={e}
-                alt="User CNIC"
-                sx={{ maxWidth: '100%', height: 'auto', borderRadius: 2, marginBottom: 10 }}
-              />
-            ))
-          ) : (
-            <Typography>No CNIC image available</Typography>
-          )}
-        </DialogContent>
+          <div>
+            <div style={{ fontWeight: 800, marginBottom: '10px' }}> Sender Informations</div>
+            <div style={{ fontSize: 14 }}>ID : {popoverData?.SendedId?._id}</div>
 
+            <div style={{ fontSize: 14 }}>Name : {popoverData?.SendedId?.username}</div>
+            <div style={{ fontSize: 14 }}>
+              Bank Acoount Connected To Stripe : {popoverData?.SendedId?.BankAountStripeId}
+            </div>
+            <div style={{ fontSize: 14 }}>
+              Account Verified : {popoverData?.SendedId?.Verified ? 'Yes' : 'No'}
+            </div>
+            <div style={{ fontSize: 14 }}>CNIC : {popoverData?.SendedId?.cnic}</div>
+            <div style={{ fontSize: 14 }}>Email : {popoverData?.SendedId?.email}</div>
+            <div style={{ fontSize: 14 }}>Phone Number : 0{popoverData?.SendedId?.phonenumber}</div>
+          </div>
+
+          <div>
+            <div style={{ fontWeight: 800, marginBottom: '10px', marginTop: '20px' }}>
+              {' '}
+              Reciever Informations
+            </div>
+            <div style={{ fontSize: 14 }}>ID : {popoverData?.RecieverId?._id}</div>
+
+            <div style={{ fontSize: 14 }}>Name : {popoverData?.RecieverId?.username}</div>
+            <div style={{ fontSize: 14 }}>
+              Bank Acoount Connected To Stripe : {popoverData?.RecieverId?.BankAountStripeId}
+            </div>
+            <div style={{ fontSize: 14 }}>
+              Account Verified : {popoverData?.RecieverId?.Verified ? 'Yes' : 'No'}
+            </div>
+            <div style={{ fontSize: 14 }}>CNIC : {popoverData?.RecieverId?.cnic}</div>
+            <div style={{ fontSize: 14 }}>Email : {popoverData?.RecieverId?.email}</div>
+            <div style={{ fontSize: 14 }}>
+              Phone Number : 0{popoverData?.RecieverId?.phonenumber}
+            </div>
+          </div>
+
+          <div>
+            <div style={{ fontWeight: 800, marginBottom: '10px', marginTop: '20px' }}>
+              {' '}
+              Property Informations
+            </div>
+            <div style={{ fontSize: 14 }}>
+              Property : {popoverData?.InAccordancePropertyId?.title}
+            </div>
+
+            <div style={{ fontSize: 14 }}>
+              Descriptiion : {popoverData?.InAccordancePropertyId?.description}
+            </div>
+          </div>
+        </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseImageModal}>Close</Button>
         </DialogActions>

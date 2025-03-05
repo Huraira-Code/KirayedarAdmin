@@ -82,7 +82,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
   };
   useEffect(() => {
     axios
-      .post(`${BASE_URL}/api/admin/adminalluser`)
+      .post(`${BASE_URL}/api/admin/allProperties`)
       .then((response) => {
         setUsers(response.data);
       })
@@ -91,127 +91,50 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
       });
   }, [dialogParam]);
 
-  const handleVerifyUser = (data: UserData) => {
-    // Make the API call to verify the user.
-    axios
-      .post(`${BASE_URL}/api/admin/verifyUser`, { id: data._id })
-      .then((response) => {
-        console.log(response.status);
-        if (response.status == 200) {
-          setDialogParam(data);
-          // Then open the modal.
-
-          setOpenModal(true);
-          handleClosePopover();
-        }
-        // // If verification is successful, store a parameter (for example, the user's name)
-        // setDialogParam(data);
-        // // Then open the modal.
-        // setOpenModal(true);
-        // handleClosePopover();
-      })
-      .catch((err) => {
-        console.error('Error verifying user:', err);
-      });
-  };
-
   console.log(user.length);
   return (
     <>
       {user.map((e) => {
         {
-          console.log(e);
+          console.log('this is', e);
         }
         return (
           <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
             <TableCell component="th" scope="row">
               <Box gap={2} display="flex" alignItems="center">
-                {e.username}
+                {e._id}
               </Box>
             </TableCell>
 
-            <TableCell>{e.email}</TableCell>
+            <TableCell>{e.title}</TableCell>
 
-            <TableCell>{e.cnic}</TableCell>
+            <TableCell>
+              {' '}
+              {`The property features a ${e.type} with an area of ${
+                e.areaofhouse
+              } Square feet, accommodating ${
+                e.peoplesharing
+              } residents who share ${e.bedroom} bedrooms and ${
+                e.bathroom
+              } bathroom. The monthly rent is Rs ${e.rent}, with a one-time advance payment of Rs ${
+                e.rent
+              }. This space is for ${
+                e.bachelor ? 'Non Bachelor' : 'Bachelor'
+              }, offering a comfortable and well-managed living experience.`}
+            </TableCell>
 
             <TableCell align="center">
-              {e.Verified ? (
+              {e.propertySelling.agreement ? (
                 <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
               ) : (
                 '-'
               )}
             </TableCell>
 
-            <TableCell>{e.phonenumber}</TableCell>
-
-            <TableCell align="right">
-              <IconButton onClick={(event) => handleOpenPopover(event, e)}>
-                <Iconify icon="eva:more-vertical-fill" />
-              </IconButton>
-            </TableCell>
+            <TableCell>{e.propertyowner._id}</TableCell>
           </TableRow>
         );
       })}
-
-      <Popover
-        open={!!openPopover}
-        anchorEl={openPopover}
-        onClose={handleClosePopover}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <MenuList
-          disablePadding
-          sx={{
-            p: 0.5,
-            gap: 0.5,
-            display: 'flex',
-            flexDirection: 'column',
-            [`& .${menuItemClasses.root}`]: {
-              px: 1,
-              gap: 2,
-              borderRadius: 0.75,
-              [`&.${menuItemClasses.selected}`]: { bgcolor: 'action.selected' },
-            },
-          }}
-        >
-          <MenuItem onClick={() => handleVerifyUser(popoverData!)}>
-            <Iconify icon="hugeicons:tick-01" />
-            Make User Verify
-          </MenuItem>
-
-          <MenuItem
-            onClick={() => {
-              setOpenImageModal(true);
-            }}
-          >
-            <Iconify icon="tabler:app-window-filled" />
-            Show CNIC Images
-          </MenuItem>
-        </MenuList>
-      </Popover>
-      <Dialog open={openImageModal} onClose={handleCloseImageModal}>
-        <DialogTitle>User CNIC Images</DialogTitle>
-        <DialogContent>
-          {popoverData?.CNICImageArray?.length ? (
-            popoverData.CNICImageArray.map((e: string, index: number) => (
-              <CardMedia
-                key={index} // Always add a key when mapping elements in React
-                component="img"
-                image={e}
-                alt="User CNIC"
-                sx={{ maxWidth: '100%', height: 'auto', borderRadius: 2, marginBottom: 10 }}
-              />
-            ))
-          ) : (
-            <Typography>No CNIC image available</Typography>
-          )}
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={handleCloseImageModal}>Close</Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 }

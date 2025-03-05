@@ -26,7 +26,7 @@ import type { UserProps } from '../user-table-row';
 
 // ----------------------------------------------------------------------
 
-export function UserView() {
+export function TransactionView() {
   const table = useTable();
 
   const [filterName, setFilterName] = useState('');
@@ -43,14 +43,11 @@ export function UserView() {
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Users
+          Transactions
         </Typography>
-        
       </Box>
 
       <Card>
-        
-
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
@@ -67,11 +64,13 @@ export function UserView() {
                   )
                 }
                 headLabel={[
-                  { id: 'name', label: 'Name' },
-                  { id: 'company', label: 'Email' },
-                  { id: 'Cnic', label: 'CNIC' },
-                  { id: 'isVerified', label: 'Verified', align: 'center' },
-                  { id: 'phoneNumber', label: 'Phone Number' },
+                  { id: 'Transaction Id', label: 'Transaction Id' },
+                  { id: 'Type', label: 'Type' },
+                  { id: 'Amount', label: 'Amount' },
+                  { id: 'Property Title', label: 'Property Title', align: 'center' },
+                  { id: 'Sender', label: 'Sender Id' },
+                  { id: 'Reciever', label: 'Reciever Id' },
+
                   { id: '' },
                 ]}
               />
@@ -100,8 +99,6 @@ export function UserView() {
             </Table>
           </TableContainer>
         </Scrollbar>
-
-       
       </Card>
     </DashboardContent>
   );

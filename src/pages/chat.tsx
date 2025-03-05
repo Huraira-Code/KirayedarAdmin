@@ -1,19 +1,20 @@
 import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
-
-import { UserView } from 'src/sections/user/view';
+import { ChatView } from 'src/sections/chat/view';
+import { TransactionView } from 'src/sections/transactions/view';
 
 // ----------------------------------------------------------------------
 
 export default function Page() {
+  
   return (
     <>
       <Helmet>
-        <title> {`transactions - ${CONFIG.appName}`}</title>
+        <title> {`Chat - ${CONFIG.appName}`}</title>
       </Helmet>
 
-      <UserView />
+      <ChatView />
     </>
   );
 }

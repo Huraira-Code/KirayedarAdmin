@@ -1,8 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
+import { TransactionView } from 'src/sections/transactions/view';
 
-import { UserView } from 'src/sections/user/view';
 
 // ----------------------------------------------------------------------
 
@@ -10,10 +10,10 @@ export default function Page() {
   return (
     <>
       <Helmet>
-        <title> {`transactions - ${CONFIG.appName}`}</title>
+        <title> {`Transactions - ${CONFIG.appName}`}</title>
       </Helmet>
 
-      <UserView />
+      <TransactionView />
     </>
   );
 }

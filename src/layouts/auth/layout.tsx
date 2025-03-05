@@ -30,39 +30,7 @@ export function AuthLayout({ sx, children, header }: AuthLayoutProps) {
     <LayoutSection
       /** **************************************
        * Header
-       *************************************** */
-      headerSection={
-        <HeaderSection
-          layoutQuery={layoutQuery}
-          slotProps={{
-            container: { maxWidth: false },
-            toolbar: { sx: { bgcolor: 'transparent', backdropFilter: 'unset' } },
-          }}
-          sx={{
-            position: { [layoutQuery]: 'fixed' },
-
-            ...header?.sx,
-          }}
-          slots={{
-            topArea: (
-              <Alert severity="info" sx={{ display: 'none', borderRadius: 0 }}>
-                This is an info Alert.
-              </Alert>
-            ),
-            leftArea: <Logo />,
-            rightArea: (
-              <Link
-                component={RouterLink}
-                href="#"
-                color="inherit"
-                sx={{ typography: 'subtitle2' }}
-              >
-                Need help?
-              </Link>
-            ),
-          }}
-        />
-      }
+      
       /** **************************************
        * Footer
        *************************************** */

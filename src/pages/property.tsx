@@ -1,19 +1,18 @@
 import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
-
-import { UserView } from 'src/sections/user/view';
-
+import { PropertyView } from 'src/sections/property/view';
 // ----------------------------------------------------------------------
 
-export default function Page() {
+export default function Property() {
+  
   return (
     <>
       <Helmet>
-        <title> {`transactions - ${CONFIG.appName}`}</title>
+        <title> {`Properties - ${CONFIG.appName}`}</title>
       </Helmet>
 
-      <UserView />
+      <PropertyView />
     </>
   );
 }
